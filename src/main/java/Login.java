@@ -1,10 +1,14 @@
-
 class Login {
+    private final String admin;
+    private final String password;
 
     Login(String admin, String password) {
+        this.admin = admin;
+        this.password = password;
     }
 
     boolean validateCredentials() {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        // Add your credential validation logic here
+        return "admin".equals(admin) && "password".equals(password); // Example validation
     }
 }

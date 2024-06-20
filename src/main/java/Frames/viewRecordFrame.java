@@ -2,7 +2,6 @@ package Frames;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,27 +9,52 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-
 public class viewRecordFrame extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JTextField searchField;
-    private final JButton searchButton;
-    private final JTextArea displayArea;
-    private List<String[]> employeeNumber;
+    private JButton searchButton = null;
+    private JTextArea displayArea = null;
+    private JLabel nameLabel, departmentLabel, birthdateLabel, designationLabel;
+    private JTextField nameField, departmentField, birthdateField, designationField;
+    private List<String[]> employeeData;
 
     public viewRecordFrame() throws IOException {
+        initComponents();
+        loadEmployeeData(); // Load employee data from file
+    }
+
+    private void initComponents() {
         setLayout(new FlowLayout());
 
         searchField = new JTextField(20);
         add(searchField);
 
-        loademployeeNumber(); // Load employee data from file
+        nameLabel = new JLabel("Name:");
+        add(nameLabel);
+        nameField = new JTextField(20);
+        add(nameField);
+
+        departmentLabel = new JLabel("Department:");
+        add(departmentLabel);
+        departmentField = new JTextField(20);
+        add(departmentField);
+
+        birthdateLabel = new JLabel("Birthdate:");
+        add(birthdateLabel);
+        birthdateField = new JTextField(20);
+        add(birthdateField);
+
+        designationLabel = new JLabel("Designation:");
+        add(designationLabel);
+        designationField = new JTextField(20);
+        add(designationField);
 
         searchButton = new JButton("Search");
         add(searchButton);
@@ -38,25 +62,23 @@ public class viewRecordFrame extends JFrame {
         displayArea = new JTextArea(10, 20);
         add(new JScrollPane(displayArea));
 
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String searchQuery = searchField.getText();
-                searchRecord(searchQuery);
-            }
+        searchButton.addActionListener((ActionEvent e) -> {
+            String searchQuery = searchField.getText();
+            searchRecord(searchQuery);
         });
 
-        setSize(400, 300);
+        setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
     }
 
-    private void loademployeeNumber() throws IOException {
-        employeeNumber = new ArrayList<>();
+    private void loadEmployeeData() throws IOException {
+        employeeData = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("C:/Users/Randy/OneDrive/Documents/Desktop/motorph/MotorPH Employee Data.csv"))) {
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine())!= null) {
                 String[] parts = line.split(","); // Assuming data is comma-separated
-                employeeNumber.add(parts);
+                employeeData.add(parts);
             }
         } catch (IOException e) {
             displayArea.setText("Error loading employee data from file.");
@@ -65,13 +87,13 @@ public class viewRecordFrame extends JFrame {
     }
 
     private void searchRecord(String query) {
-        if (employeeNumber != null && !employeeNumber.isEmpty()) {
-            for (String[] employee : employeeNumber) {
+        if (employeeData!= null &&!employeeData.isEmpty()) {
+            for (String[] employee : employeeData) {
                 if (employee.length > 0 && employee[0].equals(query)) {
-                    displayArea.setText("Employee Number: " + employee[0] + "\n"
-                            + "Name: " + employee[1] + "\n"
-                            + "Department: " + employee[2] + "\n"
-                            + "Designation: " + employee[3]);
+                    nameField.setText(employee[1]);
+                    departmentField.setText(employee[2]);
+                    birthdateField.setText(employee[3]);
+                    designationField.setText(employee[4]);
                     return;
                 }
             }
@@ -83,6 +105,7 @@ public class viewRecordFrame extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            // Create an instance of ViewRecordFrame
         });
     }
 }
